@@ -72,6 +72,14 @@ MACRO_CONFIG_INT(SvInactiveKick, sv_inactivekick, 1, 0, 2, CFGFLAG_SERVER, "How 
 MACRO_CONFIG_INT(SvVoteKick, sv_vote_kick, 1, 0, 1, CFGFLAG_SERVER, "Allow voting to kick players")
 MACRO_CONFIG_INT(SvVoteKickBantime, sv_vote_kick_bantime, 5, 0, 1440, CFGFLAG_SERVER, "The time to ban a player if kicked by vote. 0 makes it just use kick")
 
+// SQL
+MACRO_CONFIG_STR(SvSqlUser, sv_sql_user, 32, "root", CFGFLAG_SERVER, "SQL User")
+MACRO_CONFIG_STR(SvSqlPw, sv_sql_pw, 32, "", CFGFLAG_SERVER, "SQL Password")
+MACRO_CONFIG_STR(SvSqlIp, sv_sql_ip, 32, "127.0.0.1", CFGFLAG_SERVER, "SQL Database IP")
+MACRO_CONFIG_INT(SvSqlPort, sv_sql_port, 3306, 0, 65535, CFGFLAG_SERVER, "SQL Database port")
+MACRO_CONFIG_STR(SvSqlDatabase, sv_sql_database, 16, "teedb", CFGFLAG_SERVER, "SQL Database name")
+MACRO_CONFIG_STR(SvSqlPrefix, sv_sql_prefix, 16, "", CFGFLAG_SERVER, "SQL Database table prefix")
+
 // debug
 #ifdef CONF_DEBUG // this one can crash the server if not used correctly
 	MACRO_CONFIG_INT(DbgDummies, dbg_dummies, 0, 0, 15, CFGFLAG_SERVER, "")

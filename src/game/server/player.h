@@ -71,6 +71,10 @@ public:
 		int m_TargetY;
 	} m_LatestActivity;
 	
+	//1on1 - TeeDB
+	bool IsLogedIn() const { return (m_UserID > 0); }
+	int m_UserID;
+	
 private:
 	CCharacter *Character;
 	CGameContext *m_pGameServer;

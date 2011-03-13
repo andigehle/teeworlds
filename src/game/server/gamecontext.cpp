@@ -13,6 +13,7 @@
 #include "gamemodes/tdm.h"
 #include "gamemodes/ctf.h"
 #include "gamemodes/mod.h"
+#include "gamemodes/oneonone.h"
 
 enum
 {
@@ -586,7 +587,8 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 			pMessage++;
 		}
 		
-		SendChat(ClientID, Team, pMsg->m_pMessage);
+		if(checkMessage(ClientID, pPlayer, pMsg) == 1)
+			SendChat(ClientID, Team, pMsg->m_pMessage);
 	}
 	else if(MsgID == NETMSGTYPE_CL_CALLVOTE)
 	{
@@ -740,10 +742,29 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 			else
 				SendBroadcast("Teams must be balanced, please join other team", ClientID);
 		}
+		else if(!pPlayer->IsLogedIn())
+		{
+			char aBuf[64];
+			str_format(aBuf, sizeof(aBuf), "Login to play.");
+			SendBroadcast(aBuf, ClientID);
+
+			str_format(aBuf, sizeof(aBuf), "Say /login <user> <pw> for login.");
+			SendChatTarget(ClientID, aBuf);
+
+			str_format(aBuf, sizeof(aBuf), "When you have no account yet, register on teedb.info");
+			SendChatTarget(ClientID, aBuf);
+		}
 		else
 		{
-			char aBuf[128];
-			str_format(aBuf, sizeof(aBuf), "Only %d active players are allowed", g_Config.m_SvMaxClients-g_Config.m_SvSpectatorSlots);
+			//TODO: if in queue say: Your Match is at X time ELSE:
+			char aBuf[64];
+			str_format(aBuf, sizeof(aBuf), "Say /request <user> or /status and /request <userid>");
+			SendBroadcast(aBuf, ClientID);
+			str_format(aBuf, sizeof(aBuf), "for requesting a match with a player.");
+			SendBroadcast(aBuf, ClientID);
+			str_format(aBuf, sizeof(aBuf), "Say /rank <user> or /rank <userid> to check the players rank.");
+			SendBroadcast(aBuf, ClientID);
+			str_format(aBuf, sizeof(aBuf), "Notice: You will get more points for winning against a higher ranked player.");
 			SendBroadcast(aBuf, ClientID);
 		}
 	}
@@ -980,6 +1001,29 @@ void CGameContext::ConClearVotes(IConsole::IResult *pResult, void *pUserData)
 	pSelf->m_pVoteOptionLast = 0;
 }
 
+//TODO: Dimi testdata
+void CGameContext::Test()//void *pUserData)
+{
+	CGameContext *pSelf = (CGameContext *)this;
+	//int Len = str_length(pResult->GetString(0));
+
+	CGameContext::CVoteOption *pOption = (CGameContext::CVoteOption *)pSelf->m_pVoteOptionHeap->Allocate(sizeof(CGameContext::CVoteOption) + strlen("Aersche ficken?"));
+	pOption->m_pNext = 0;
+	pOption->m_pPrev = pSelf->m_pVoteOptionLast;
+	if(pOption->m_pPrev)
+		pOption->m_pPrev->m_pNext = pOption;
+	pSelf->m_pVoteOptionLast = pOption;
+	if(!pSelf->m_pVoteOptionFirst)
+		pSelf->m_pVoteOptionFirst = pOption;
+
+	mem_copy(pOption->m_aCommand, "Aersche ficken?", strlen("Aersche ficken?")+1);
+	dbg_msg("server", "added option '%s'", pOption->m_aCommand);
+
+	CNetMsg_Sv_VoteOption OptionMsg;
+	OptionMsg.m_pCommand = pOption->m_aCommand;
+	pSelf->Server()->SendPackMsg(&OptionMsg, MSGFLAG_VITAL, -1);
+}
+
 void CGameContext::ConVote(IConsole::IResult *pResult, void *pUserData)
 {
 	CGameContext *pSelf = (CGameContext *)pUserData;
@@ -1056,6 +1100,8 @@ void CGameContext::OnInit(/*class IKernel *pKernel*/)
 		m_pController = new CGameControllerCTF(this);
 	else if(str_comp(g_Config.m_SvGametype, "tdm") == 0)
 		m_pController = new CGameControllerTDM(this);
+	else if(str_comp(g_Config.m_SvGametype, "1on1") == 0)
+		m_pController = new CGameControllerOneOnOne(this);
 	else
 		m_pController = new CGameControllerDM(this);
 

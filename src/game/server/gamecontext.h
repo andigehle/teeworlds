@@ -60,6 +60,19 @@ class CGameContext : public IGameServer
 	
 	CGameContext(int Resetting);
 	void Construct(int Resetting);
+	
+	// chat messages
+	int checkMessage(int ClientId, CPlayer *p, CNetMsg_Cl_Say *pMsg);
+	void rank(int ClientId, CPlayer *p, CNetMsg_Cl_Say *pMsg);
+	void top5(int ClientId, CPlayer *p, CNetMsg_Cl_Say *pMsg);
+	void login(int ClientId, CPlayer *p, CNetMsg_Cl_Say *pMsg);
+	void challenge(int ClientId, CPlayer *p, CNetMsg_Cl_Say *pMsg);
+	void accept(int ClientId, CPlayer *p, CNetMsg_Cl_Say *pMsg);
+	void decline(int ClientId, CPlayer *p, CNetMsg_Cl_Say *pMsg);
+	void help(int ClientId, CPlayer *p, CNetMsg_Cl_Say *pMsg);
+	void info(int ClientId, CPlayer *p, CNetMsg_Cl_Say *pMsg);
+	void regpage(int ClientId, CPlayer *p, CNetMsg_Cl_Say *pMsg);
+	void wrongcmd(int ClientId, CPlayer *p, CNetMsg_Cl_Say *pMsg);
 
 	bool m_Resetting;
 public:
@@ -83,6 +96,7 @@ public:
 	class CCharacter *GetPlayerChar(int ClientID);
 	
 	// voting
+	void Test();
 	void StartVote(const char *pDesc, const char *pCommand);
 	void EndVote();
 	void SendVoteSet(int ClientID);
