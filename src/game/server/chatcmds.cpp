@@ -28,9 +28,7 @@ int CGameContext::checkMessage(int ClientId, CPlayer *p, CNetMsg_Cl_Say *pMsg)
 
 void CGameContext::rank(int ClientId, CPlayer *p, CNetMsg_Cl_Say *pMsg)
 {
-	CGameControllerOneOnOne *controller = (CGameControllerOneOnOne*) m_pController;
-	controller->VoteChallenge();//p, m_apPlayers[i]);
-	//CSql::getRank(ClientId);
+	CSql::getRank(ClientId);
 }
 
 void CGameContext::top5(int ClientId, CPlayer *p, CNetMsg_Cl_Say *pMsg)
