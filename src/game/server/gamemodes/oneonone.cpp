@@ -112,10 +112,6 @@ void CGameControllerOneOnOne::Tick()
 	IGameController::Tick();
 }
 
-void CGameControllerOneOnOne::VoteChallenge()
-{
-	GameServer()->Test();
-}
 void CGameControllerOneOnOne::Challenge(CPlayer *p, CPlayer *p2)
 {
 	if(p->GetTeam() != -1)
