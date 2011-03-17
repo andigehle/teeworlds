@@ -544,7 +544,7 @@ void CGameContext::OnClientDrop(int ClientID)
 {
 	// remove player from queue
 	CGameControllerOneOnOne *controller = (CGameControllerOneOnOne*) m_pController;
-	controller->remove(ClientId);
+	controller->remove(ClientID);
 
 	AbortVoteKickOnDisconnect(ClientID);
 	m_apPlayers[ClientID]->OnDisconnect();
